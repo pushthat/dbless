@@ -18,6 +18,7 @@ type DbLess struct {
 	SerializerType *string
 	Index          *string
 	Prefix         *string
+	S3Session      *session.Session
 	serializer     serializer.Serializer
 	s3Uploader     *s3manager.Uploader
 	s3Downloader   *s3manager.Downloader
@@ -30,13 +31,9 @@ func (dbless *DbLess) Init() error {
 		dbless.serializer = &serializer
 	}
 
-	sess, err := session.NewSession()
-	if err != nil {
-		return err
-	}
-	uploader := s3manager.NewUploader(sess)
+	uploader := s3manager.NewUploader(dbless.S3Session)
 	dbless.s3Uploader = uploader
-	downloader := s3manager.NewDownloader(sess)
+	downloader := s3manager.NewDownloader(dbless.S3Session)
 	dbless.s3Downloader = downloader
 	return nil
 }
