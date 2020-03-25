@@ -1,14 +1,14 @@
-package main
+package dbless
 
 import (
 	"fmt"
 	"log"
+	"testing"
 
 	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/pushthat/dbless/cmd/dbless"
 )
 
-func main() {
+func BenchmarkSet(t *testing.T) {
 	serializerType := "json"
 	s3Bucket := "dbless-test"
 	index := "id"
@@ -19,9 +19,9 @@ func main() {
 		log.Fatal(err)
 	}
 
-	var DbLessSessions []*dbless.DbLessSession
+	var DbLessSessions []*DbLessSession
 
-	dblessSession := dbless.DbLessSession{
+	dblessSession := DbLessSession{
 		S3Bucket:  &s3Bucket,
 		Index:     &index,
 		Prefix:    &prefix,
@@ -30,7 +30,7 @@ func main() {
 
 	DbLessSessions = append(DbLessSessions, &dblessSession)
 
-	dbless := dbless.DbLess{
+	dbless := DbLess{
 		DbLessSessions: DbLessSessions,
 		SerializerType: &serializerType,
 	}
@@ -44,7 +44,35 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+}
 
+func BenchmarkGet(t *testing.T) {
+	serializerType := "json"
+	s3Bucket := "dbless-test"
+	index := "id"
+	prefix := "db-less/"
+
+	s3Session, err := session.NewSession()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var DbLessSessions []*DbLessSession
+
+	dblessSession := DbLessSession{
+		S3Bucket:  &s3Bucket,
+		Index:     &index,
+		Prefix:    &prefix,
+		S3Session: s3Session,
+	}
+
+	DbLessSessions = append(DbLessSessions, &dblessSession)
+
+	dbless := DbLess{
+		DbLessSessions: DbLessSessions,
+		SerializerType: &serializerType,
+	}
+	dbless.Init()
 	objToLoad := map[string]interface{}{
 		"id": "1",
 	}
