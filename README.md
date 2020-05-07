@@ -1,3 +1,10 @@
+# dbless
+
+## Key/Value store library backed by s3 made in go 
+
+### Example
+
+```go
 package main
 
 import (
@@ -38,7 +45,7 @@ func main() {
 
 	objToSave := map[string]interface{}{
 		"id":   "1",
-		"name": "matias",
+		"name": "john",
 	}
 	err = dbless.Save(objToSave)
 	if err != nil {
@@ -54,3 +61,5 @@ func main() {
 	}
 	fmt.Println(data)
 }
+
+```
