@@ -21,6 +21,7 @@ func main() {
 	index := "id"
 	prefix := "db-less/"
 
+	// initialise a s3 session
 	s3Session, err := session.NewSession()
 	if err != nil {
 		log.Fatal(err)
@@ -28,6 +29,7 @@ func main() {
 
 	var DbLessSessions []*dbless.DbLessSession
 
+	// initialise dbless
 	dblessSession := dbless.DbLessSession{
 		S3Bucket:  &s3Bucket,
 		Index:     &index,
@@ -47,11 +49,14 @@ func main() {
 		"id":   "1",
 		"name": "john",
 	}
+	
+	// write an item
 	err = dbless.Save(objToSave)
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	// load an item
 	objToLoad := map[string]interface{}{
 		"id": "1",
 	}
